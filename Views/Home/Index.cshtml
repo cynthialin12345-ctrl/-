@@ -1,0 +1,96 @@
+@{
+    ViewBag.Title = "專案首頁";
+    Layout = "_Layout";
+}
+
+<div class="space-y-8 py-6 max-w-4xl mx-auto">
+    <!-- Combined Welcome & Developer Info Header -->
+    <div class="relative overflow-hidden backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl p-8 sm:p-10 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-8 group">
+        <div class="space-y-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 uppercase">
+                專案暨系統首頁
+            </span>
+            <h1 class="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                學籍成績管理系統
+            </h1>
+            <p class="text-sm text-slate-400 leading-relaxed max-w-xl">
+                本系統為元智大學資訊管理學系資料庫課程專案。系統整合了完整的學生學籍 CRUD、Offset-Fetch 分頁、模糊搜尋，以及基於 FastReport 的歷年成績單 PDF 生成功能。
+            </p>
+        </div>
+    
+    </div>
+
+    <!-- Developer Information Card (從原靜態首頁合入) -->
+    <div class="backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 text-white/5 pointer-events-none">
+            <svg class="w-40 h-40 fill-current" viewBox="0 0 24 24">
+                <path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C5.9,9.7 5.5,11.23 5.5,13C5.5,14.77 5.9,16.3 6.53,17.58C6.08,17.85 5.56,18 5,18C2.24,18 0,15.76 0,13C0,10.24 2.24,8 5,8M19,8C21.76,8 24,10.24 24,13C24,15.76 21.76,18 19,18C18.44,18 17.92,17.85 17.47,17.58C18.1,16.3 18.5,14.77 18.5,13C18.5,11.23 18.1,9.7 17.47,8.42C17.92,8.15 18.44,8 19,8M12,14C15.86,14 19,15.79 19,18V20H5V18C5,15.79 8.14,14 12,14Z" />
+            </svg>
+        </div>
+        <div class="flex flex-col md:flex-row items-center gap-6 justify-between">
+            <div class="space-y-4 text-center md:text-left w-full">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 uppercase">
+                    學生資訊
+                </span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl">
+                    <div class="bg-slate-950/40 border border-white/5 rounded-2xl p-4 flex justify-between items-center px-6">
+                        <span class="text-sm text-slate-400 font-medium">開發學生：</span>
+                        <span class="text-sm font-bold text-indigo-300">江芮希</span>
+                    </div>
+                    <div class="bg-slate-950/40 border border-white/5 rounded-2xl p-4 flex justify-between items-center px-6">
+                        <span class="text-sm text-slate-400 font-medium">學號：</span>
+                        <span class="text-sm font-bold text-indigo-300 font-mono">1132013</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <!-- Stat Item 1: Students -->
+        <div class="backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-white/10 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-300">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path d="M12,3L1,9L12,15L21,10.09V17H23V9M2,11.83V16.16L12,21.62L22,16.16V11.83L12,17.29L2,11.83Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <p class="text-xs font-semibold text-slate-500 tracking-wider">學生總人數</p>
+                <h3 class="text-3xl font-extrabold text-slate-100 font-mono">@ViewBag.StudentCount</h3>
+            </div>
+        </div>
+
+        <!-- Stat Item 2: Courses -->
+        <div class="backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-white/10 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-300">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path d="M19,2H5A2,2 0 0,0 3,4V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V4A2,2 0 0,0 19,2M19,20H5V4H7V9L9.5,7.5L12,9V4H19V20Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <p class="text-xs font-semibold text-slate-500 tracking-wider">開課總數</p>
+                <h3 class="text-3xl font-extrabold text-slate-100 font-mono">@ViewBag.CourseCount</h3>
+            </div>
+        </div>
+
+        <!-- Stat Item 3: Grades -->
+        <div class="backdrop-blur-xl bg-slate-900/40 border border-white/5 rounded-3xl p-6 shadow-xl relative overflow-hidden group hover:border-white/10 transition-all duration-300">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-300">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                        <path d="M9,20.42L4.83,16.25L6.25,14.83L9,17.58L17.75,8.83L19.17,10.25L9,20.42Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="space-y-1">
+                <p class="text-xs font-semibold text-slate-500 tracking-wider">選課與成績登錄筆數</p>
+                <h3 class="text-3xl font-extrabold text-slate-100 font-mono">@ViewBag.GradeCount</h3>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+@{
+    ViewBag.Title = "產生成績單";
+    Layout = "_Layout";
+
+    var dt = ViewBag.DT;
+}
+@model stu
+
+<div class="flex items-center justify-center py-12">
+    <!-- 玻璃物性卡片 -->
+    <div class="w-full max-w-md backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-black/30 group">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 mb-4 shadow-lg shadow-indigo-500/25">
+                <svg class="w-7 h-7 text-white fill-current" viewBox="0 0 24 24">
+                    <path d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-2">學籍成績檔案生成</h2>
+            <p class="text-xs text-slate-400 font-semibold tracking-wide">請選取學生以產生歷年成績單 PDF 檔案</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post" action="~/Home/generate" class="space-y-6">
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="stuno">選取在學學生</label>
+                <div class="relative">
+                    <select asp-for="stuno" class="w-full pl-4 pr-10 py-3.5 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner appearance-none cursor-pointer">
+                        @for (int i = 0; i < dt.Rows.Count; i++)
+                        {
+                            <option value="@Html.Raw(dt.Rows[i]["stuno"])" class="bg-slate-900 text-slate-200">
+                                @Html.Raw(dt.Rows[i]["name"]) (@Html.Raw(dt.Rows[i]["stuno"]))
+                            </option>
+                        }
+                    </select>
+                    <!-- 下拉箭頭 SVG -->
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/25">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M16,11V15H13V18H11V15H8V13H11V10H13V13H16Z" />
+                </svg>
+                產生並下載歷年成績單
+            </button>
+        </form>
+
+    </div>
+</div>

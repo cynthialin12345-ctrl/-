@@ -1,0 +1,233 @@
+@{
+    ViewBag.Title = "修課成績管理";
+    Layout = "_Layout";
+    var dt1 = ViewBag.DT1;
+    var dt2 = ViewBag.DT2;
+}
+@model stu_crs
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- 左側面板：新增修課成績表單 -->
+    <div class="lg:col-span-1">
+        <!-- 玻璃物性卡片 -->
+        <div class="backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/30 hover:shadow-black/55 transition-all duration-500 group">
+            
+            <!-- Header -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">登記修課成績</h3>
+                <p class="text-xs text-slate-400 mt-1 font-semibold tracking-wide">請填寫以註冊學生的修課科目與成績</p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" action="~/insert/course" autocomplete="off" class="space-y-4">
+                
+                <!-- 學生選取 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="stuno">選取學生</label>
+                    <div class="relative">
+                        <select asp-for="stuno" class="stuno w-full pl-4 pr-10 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner appearance-none cursor-pointer">
+                            <option value="" disabled selected class="bg-slate-900 text-slate-500">-- 請選擇學生 --</option>
+                            @for (int i = 0; i < dt1.Rows.Count; i++)
+                            {
+                                <option value="@Html.Raw(dt1.Rows[i]["stuno"])" class="bg-slate-900 text-slate-200">
+                                    @Html.Raw(dt1.Rows[i]["name"]) (@Html.Raw(dt1.Rows[i]["stuno"]))
+                                </option>
+                            }
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 學年 & 學期 -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="year">學年度</label>
+                        <input type="text" asp-for="year" placeholder="113" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="semester">學期</label>
+                        <input type="text" asp-for="semester" placeholder="1" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                    </div>
+                </div>
+
+                <!-- 課程選擇 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="stu_course_no">修課科目</label>
+                    <div class="relative">
+                        <select asp-for="stu_course_no" class="w-full pl-4 pr-10 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner appearance-none cursor-pointer">
+                            @for (int i = 0; i < dt2.Rows.Count; i++)
+                            {
+                                <option value="@Html.Raw(dt2.Rows[i]["cono"])" class="bg-slate-900 text-slate-200">
+                                    @Html.Raw(dt2.Rows[i]["chinese_co"]) (@Html.Raw(dt2.Rows[i]["cono"]))
+                                </option>
+                            }
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 成績 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="stu_course_score">學期成績</label>
+                    <input type="text" asp-for="stu_course_score" placeholder="請輸入學分成績 (0-100)" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center gap-2 cursor-pointer mt-4">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                    </svg>
+                    新增修課記錄
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- 右側面板：修課成績清單 -->
+    <div class="lg:col-span-2">
+        <div class="backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/30 flex flex-col h-full">
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-bold text-slate-200">修課歷史與成績列表</h3>
+                <p class="text-xs text-slate-400 mt-1 font-semibold tracking-wide">選取左側學生後，此處將自動非同步加載其完整的歷史修課記錄與成績清單</p>
+            </div>
+
+            <!-- 成績表格容器 -->
+            <div class="flex-grow overflow-x-auto rounded-2xl border border-white/5 bg-slate-950/20 shadow-inner min-h-[300px]">
+                <table class="list w-full min-w-[500px]">
+                    <!-- JS 動態寫入內容 -->
+                    <tbody>
+                        <tr>
+                            <td class="text-center py-20 text-slate-500 text-sm font-semibold tracking-wide">
+                                <svg class="w-12 h-12 text-slate-600 mx-auto mb-3 stroke-current" fill="none" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                                </svg>
+                                請於左側下拉選單「選取學生」以加載成績列表
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- 互動指令 Javascript -->
+<script>
+    class crs {
+        constructor(name, cono, year, sem, score, stuno) {
+            this.Name = document.createElement('td');
+            this.Name.textContent = name;
+            this.Name.className = "px-6 py-4 text-sm font-medium text-slate-200";
+
+            this.Cono = document.createElement('td');
+            this.Cono.textContent = cono;
+            this.Cono.classList.add("cono");
+            this.Cono.className = "cono px-6 py-4 text-sm text-slate-400 font-mono";
+
+            this.Year = document.createElement('td');
+            this.Year.textContent = year;
+            this.Year.classList.add("year");
+            this.Year.className = "year px-6 py-4 text-sm text-slate-400";
+
+            this.Sem = document.createElement('td');
+            this.Sem.textContent = sem;
+            this.Sem.classList.add("sem");
+            this.Sem.className = "sem px-6 py-4 text-sm text-slate-400";
+
+            this.Score = document.createElement('td');
+            this.Score.textContent = score;
+            this.Score.className = "px-6 py-4 text-sm font-bold " + (score >= 60 ? "text-emerald-400" : "text-rose-500");
+
+            // 刪除按鈕包裝在 td 中
+            this.Action = document.createElement('td');
+            this.Action.className = "px-6 py-4 text-right";
+
+            this.Delete = document.createElement('button');
+            this.Delete.setAttribute('onclick', 'del(this)');
+            this.Delete.setAttribute('value', stuno);
+            this.Delete.textContent = '刪除';
+            this.Delete.className = "px-3 py-1.5 bg-rose-600/10 hover:bg-rose-600/25 border border-rose-500/20 hover:border-rose-500/40 text-rose-400 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer shadow-lg shadow-rose-950/20";
+            this.Action.appendChild(this.Delete);
+        }
+    }
+
+    function del(e) {
+        var tr = e.closest("tr");
+        if (!tr) return;
+
+        var json = {};
+        json.stuno = parseInt(e.value);
+        json.year = parseInt(tr.querySelector(".year").textContent);
+        json.semester = parseInt(tr.querySelector(".sem").textContent);
+        json.stu_course_no = tr.querySelector(".cono").textContent;
+
+        tr.remove();
+
+        fetch('@Url.Action("DelStuCrs")', {
+            mode: 'cors',
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(json)
+        });
+    }
+
+    document.querySelector(".stuno").addEventListener('change', (e) => {
+        var table = document.querySelector(".list");
+        // 初始化有質感的透明表頭
+        table.innerHTML = "<thead><tr class='bg-slate-950/45 border-b border-white/5'><th class='px-6 py-4 text-left text-xs font-semibold text-slate-400 tracking-wider'>課程名稱</th><th class='px-6 py-4 text-left text-xs font-semibold text-slate-400 tracking-wider'>課程代碼</th><th class='px-6 py-4 text-left text-xs font-semibold text-slate-400 tracking-wider'>學年</th><th class='px-6 py-4 text-left text-xs font-semibold text-slate-400 tracking-wider'>學期</th><th class='px-6 py-4 text-left text-xs font-semibold text-slate-400 tracking-wider'>成績</th><th class='px-6 py-4 text-right text-xs font-semibold text-slate-400 tracking-wider'>操作</th></tr></thead><tbody class='divide-y divide-white/5'>";
+
+        fetch('@Url.Action("GetStuCrs")', {
+            mode: 'cors',
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(parseInt(e.target.value))
+        }).then((res) => { 
+            return res.json();
+        }).then((data) => {
+            if (data.length === 0) {
+                var tbody = document.createElement("tbody");
+                tbody.innerHTML = "<tr><td colspan='6' class='text-center py-20 text-slate-500 text-sm font-semibold tracking-wide'>該生目前無任何修課與成績記錄</td></tr>";
+                table.appendChild(tbody);
+                return;
+            }
+
+            var tbody = table.querySelector("tbody") || document.createElement("tbody");
+            if (!table.querySelector("tbody")) {
+                table.appendChild(tbody);
+            }
+
+            for (var item of data) {
+                var Course = new crs(item.chinese_co || '未命名課程', item.stu_course_no, item.year, item.semester, item.stu_course_score, item.stuno);
+                var child = document.createElement("tr");
+                child.className = "hover:bg-white/[0.02] transition-colors duration-300";
+                child.appendChild(Course.Name);
+                child.appendChild(Course.Cono);
+                child.appendChild(Course.Year);
+                child.appendChild(Course.Sem);
+                child.appendChild(Course.Score);
+                child.appendChild(Course.Action);
+                tbody.appendChild(child);
+            }
+        });
+    });
+</script>

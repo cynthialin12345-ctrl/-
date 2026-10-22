@@ -1,0 +1,117 @@
+@{
+    Layout = null; // 獨立的高質感登入頁面
+}
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>成績單管理系統 - 登入</title>
+    <!-- Google Fonts Outfit & Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS v3 Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 min-h-screen text-slate-100 flex items-center justify-center font-sans antialiased relative">
+
+    <div class="relative z-10 w-full max-w-md p-6">
+        <!-- 玻璃物性毛玻璃卡片 -->
+        <div class="backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-10 shadow-2xl shadow-black/40 group">
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-500 to-blue-500 shadow-lg shadow-indigo-500/30 mb-5 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-7 h-7 text-white fill-current" viewBox="0 0 24 24">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9M2 11.83V16.16L12 21.62L22 16.16V11.83L12 17.29L2 11.83Z" />
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent mb-2">學籍成績管理系統</h1>
+                <p class="text-xs text-slate-400 font-semibold tracking-wide">請輸入您的管理員驗證資訊</p>
+            </div>
+
+            <!-- Form -->
+            <form method="post" action="@Url.Action("Login", "Account")" class="space-y-6">
+                @Html.AntiForgeryToken()
+
+                <!-- 錯誤摘要 -->
+                @if (ViewData.ModelState.Any(x => x.Value?.Errors.Any() == true))
+                {
+                    <div class="bg-red-500/10 border-l-4 border-red-500 text-red-400 p-4 rounded-xl text-sm leading-relaxed shadow-lg shadow-red-950/20">
+                        @Html.ValidationSummary(true)
+                    </div>
+                }
+
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                <!-- 帳號欄位 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="username">管理員帳號</label>
+                    <div class="relative">
+                        <input class="w-full pl-12 pr-4 py-3.5 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" 
+                               type="text" id="username" name="username" placeholder="請輸入帳號" required autocomplete="username" autofocus />
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 密碼欄位 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="password">密碼</label>
+                    <div class="relative">
+                        <input class="w-full pl-12 pr-4 py-3.5 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" 
+                               type="password" id="password" name="password" placeholder="請輸入密碼" required autocomplete="current-password" />
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 flex items-center pointer-events-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 登入按鈕 -->
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center gap-2 cursor-pointer">
+                    驗證並登入系統
+                </button>
+            </form>
+
+            <!-- 測試帳密氣泡提示 -->
+            <div class="mt-6 bg-slate-950/50 border border-white/5 rounded-2xl p-4 text-center backdrop-blur-md">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-widest bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 uppercase mb-2">
+                    測試登入憑證
+                </span>
+                <p class="text-xs text-slate-400 font-semibold">
+                    帳號：<span class="text-indigo-300 font-mono select-all">admin</span> &bull; 
+                    密碼：<span class="text-indigo-300 font-mono select-all">admin123</span>
+                </p>
+            </div>
+
+            <!-- Footer Text -->
+            <p class="text-center text-[10px] text-slate-500 tracking-wider mt-8">
+                &copy; @DateTime.Now.Year 元智大學資訊管理學系 &bull; 資料庫系統專案
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

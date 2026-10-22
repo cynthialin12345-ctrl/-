@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - 學籍成績管理系統</title>
+    <!-- Google Fonts Outfit & Noto Sans TC -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS v3 Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 隱藏預設捲軸，保留平滑滾動 */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* 自訂精美捲軸 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 min-h-screen text-slate-100 flex flex-col font-sans relative antialiased">
+
+    <header class="relative z-50">
+        <!-- 玻璃物性毛玻璃導航列 -->
+        <nav class="sticky top-0 backdrop-blur-md bg-slate-950/65 border-b border-white/5 shadow-lg shadow-black/20">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                
+                <!-- Logo & 標題 -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-blue-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <svg class="w-5.5 h-5.5 text-white fill-current" viewBox="0 0 24 24">
+                            <path d="M12 3L1 9L12 15L21 10.09V17H23V9M2 11.83V16.16L12 21.62L22 16.16V11.83L12 17.29L2 11.83Z" />
+                        </svg>
+                    </div>
+                    <span class="text-lg font-bold tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">學籍成績管理系統</span>
+                </div>
+
+                <!-- 導覽連結 -->
+                <div class="hidden md:flex items-center gap-1">
+                    <a class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300" href="~/Home/Index">首頁</a>
+                    <a class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300" href="~/Home/Transcript">產生成績單</a>
+                    <a class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300" href="~/Insert/Addstudent">編輯學生</a>
+                    <a class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-300" href="~/Insert/Addcourse">修課成績</a>
+                </div>
+
+                <!-- 驗證狀態 -->
+                <div class="flex items-center gap-4">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="flex items-center gap-3">
+                            <div class="hidden sm:flex flex-col text-right">
+                                <span class="text-xs text-slate-400 font-semibold">當前登入</span>
+                                <span class="text-sm text-slate-200 font-bold">@User.Identity.Name</span>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-sm font-bold text-indigo-300">
+                                @(User.Identity.Name?.FirstOrDefault().ToString().ToUpper() ?? "A")
+                            </div>
+                        </div>
+                        <a class="px-4 py-2 bg-red-600/10 hover:bg-red-600/25 border border-red-500/20 hover:border-red-500/40 text-red-400 text-sm font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-red-950/20" asp-controller="Account" asp-action="Logout">登出</a>
+                    }
+                    else
+                    {
+                        <a class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/30" asp-controller="Account" asp-action="Login">登入系統</a>
+                    }
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主體內容 -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-10 relative z-10">
+        @RenderBody()
+    </main>
+
+    <!-- 頁尾 -->
+    <footer class="border-t border-white/5 py-8 text-center text-xs text-slate-500 relative z-10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; @DateTime.Now.Year 學籍成績管理系統 &bull; 元智大學資訊管理學系專案</p>
+            <div class="flex gap-4 text-slate-600">
+                <span>技術支援：Tailwind CSS v3</span>
+                <span>&bull;</span>
+                <span>ASP.NET Core 6.0</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 全局 Script -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

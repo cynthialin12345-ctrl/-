@@ -1,0 +1,363 @@
+@{
+    ViewBag.Title = "學籍管理中心";
+    Layout = "_Layout";
+    
+    // 獲取控制器傳遞的分頁學籍數據
+    System.Data.DataTable students = ViewBag.StudentsList;
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+    string searchTerm = ViewBag.SearchTerm ?? "";
+}
+@model stu
+
+<div class="space-y-8">
+    
+    <!-- 上半部：新增學生與搜尋過濾 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- 左側：新增學生學籍卡片 -->
+        <div class="lg:col-span-1">
+            <div class="backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/30 group relative overflow-hidden">
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">學籍資料註冊</h3>
+                    <p class="text-xs text-slate-400 mt-1 font-semibold tracking-wide">填寫以下資訊以註冊新的學生學籍</p>
+                </div>
+
+                <form method="post" action="~/insert/student" autocomplete="off" class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="stuno">學生學號</label>
+                        <input type="text" asp-for="stuno" placeholder="請輸入學號 (7位數)" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="name">學生姓名</label>
+                        <input type="text" asp-for="name" placeholder="請輸入學生姓名" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="deptno">系所代碼</label>
+                            <input type="text" asp-for="deptno" placeholder="例如：502" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="entryYear">入學年 (民國)</label>
+                            <input type="text" asp-for="entryYear" placeholder="例如：113" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" required />
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="gradDate">畢業年 (民國 - 在學生為空)</label>
+                        <input type="text" asp-for="gradDate" placeholder="例如：117" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" />
+                    </div>
+
+                    <button type="submit" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center gap-2 cursor-pointer mt-4">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                        </svg>
+                        註冊新學籍
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 右側：學籍名冊列表與即時搜尋 -->
+        <div class="lg:col-span-2 flex flex-col justify-between">
+            <div class="backdrop-blur-xl bg-slate-900/45 border border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/30 flex flex-col h-full justify-between">
+                
+                <div>
+                    <!-- 搜尋列與標題 -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-200">學籍名冊檔案庫</h3>
+                            <p class="text-xs text-slate-400 mt-1 font-semibold tracking-wide">目前登記於資料庫中的在學與畢業生名單</p>
+                        </div>
+                        
+                        <!-- 搜尋表單 -->
+                        <form method="get" action="~/Insert/Addstudent" class="flex items-center gap-2 max-w-sm w-full sm:w-auto">
+                            <div class="relative flex-grow">
+                                <input type="text" name="searchTerm" value="@searchTerm" placeholder="搜尋學號或姓名..." class="w-full pl-10 pr-4 py-2 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-xs focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner placeholder-slate-600" />
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.637 10.637z" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-white/5 hover:border-white/10 text-slate-200 text-xs font-semibold rounded-xl transition-all duration-300 cursor-pointer shadow-md">
+                                搜尋
+                            </button>
+                            @if (!string.IsNullOrEmpty(searchTerm))
+                            {
+                                <a href="~/Insert/Addstudent" class="px-3 py-2 bg-rose-950/40 hover:bg-rose-950/60 border border-rose-500/20 text-rose-400 text-xs font-semibold rounded-xl transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center">
+                                    清除
+                                </a>
+                            }
+                        </form>
+                    </div>
+
+                    <!-- 學籍表格 -->
+                    <div class="overflow-x-auto rounded-2xl border border-white/5 bg-slate-950/20 shadow-inner">
+                        <table class="w-full min-w-[600px] border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950/45 border-b border-white/5">
+                                    <th class="px-5 py-3.5 text-left text-xs font-bold text-slate-400 tracking-wider">學生學號</th>
+                                    <th class="px-5 py-3.5 text-left text-xs font-bold text-slate-400 tracking-wider">學生姓名</th>
+                                    <th class="px-5 py-3.5 text-left text-xs font-bold text-slate-400 tracking-wider">系所代碼</th>
+                                    <th class="px-5 py-3.5 text-left text-xs font-bold text-slate-400 tracking-wider">入學年</th>
+                                    <th class="px-5 py-3.5 text-left text-xs font-bold text-slate-400 tracking-wider">畢業年</th>
+                                    <th class="px-5 py-3.5 text-right text-xs font-bold text-slate-400 tracking-wider">操作功能</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                @if (students != null && students.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < students.Rows.Count; i++)
+                                    {
+                                        var row = students.Rows[i];
+                                        var stunoVal = row["stuno"].ToString();
+                                        var nameVal = row["name"].ToString();
+                                        var deptVal = row["deptno"].ToString();
+                                        var entryVal = row["entryYear"].ToString();
+                                        var gradVal = row["gradDate"] == DBNull.Value ? "" : row["gradDate"].ToString();
+                                        
+                                        <tr class="hover:bg-white/[0.02] transition-colors duration-300">
+                                            <td class="px-5 py-3.5 text-sm font-semibold font-mono text-slate-300">@stunoVal</td>
+                                            <td class="px-5 py-3.5 text-sm font-bold text-slate-200">@nameVal</td>
+                                            <td class="px-5 py-3.5 text-sm text-slate-400 font-mono">@deptVal</td>
+                                            <td class="px-5 py-3.5 text-sm text-slate-400">@entryVal 年</td>
+                                            <td class="px-5 py-3.5 text-sm text-slate-400">@(string.IsNullOrEmpty(gradVal) ? "在學中" : gradVal + " 年")</td>
+                                            <td class="px-5 py-3.5 text-right">
+                                                <div class="inline-flex gap-2">
+                                                    <!-- 編輯按鈕 -->
+                                                    <button onclick="openEditModal('@stunoVal', '@Html.Raw(nameVal)', '@deptVal', '@entryVal', '@gradVal')" 
+                                                            class="px-2.5 py-1.5 bg-indigo-600/10 hover:bg-indigo-600/25 border border-indigo-500/20 hover:border-indigo-500/40 text-indigo-400 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer shadow-md shadow-indigo-950/10">
+                                                        編輯
+                                                    </button>
+                                                    <!-- 刪除按鈕 -->
+                                                    <button onclick="triggerDelete('@stunoVal', '@Html.Raw(nameVal)')" 
+                                                            class="px-2.5 py-1.5 bg-rose-600/10 hover:bg-rose-600/25 border border-rose-500/20 hover:border-rose-500/40 text-rose-400 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer shadow-md shadow-rose-950/10">
+                                                        刪除
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-16 text-slate-500 text-xs font-semibold tracking-wide">
+                                            無符合搜尋條件之學籍檔案
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 分頁導航控制器 -->
+                <div class="flex items-center justify-between border-t border-white/5 pt-5 mt-6">
+                    <div class="text-xs text-slate-500 font-semibold">
+                        第 <span class="text-slate-300 font-mono">@currentPage</span> 頁，共 <span class="text-slate-300 font-mono">@totalPages</span> 頁
+                    </div>
+                    
+                    <div class="inline-flex gap-1.5">
+                        <!-- 上一頁 -->
+                        @if (currentPage > 1)
+                        {
+                            <a href="~/Insert/Addstudent?searchTerm=@searchTerm&page=@(currentPage - 1)" 
+                               class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/5 text-slate-300 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-1 shadow-sm">
+                                <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                </svg>
+                                上一頁
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="px-3 py-1.5 bg-slate-950/20 border border-white/5 text-slate-600 text-xs font-semibold rounded-lg pointer-events-none flex items-center justify-center gap-1">
+                                <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                </svg>
+                                上一頁
+                            </span>
+                        }
+
+                        <!-- 下一頁 -->
+                        @if (currentPage < totalPages)
+                        {
+                            <a href="~/Insert/Addstudent?searchTerm=@searchTerm&page=@(currentPage + 1)" 
+                               class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/5 text-slate-300 text-xs font-semibold rounded-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-1 shadow-sm">
+                                下一頁
+                                <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="px-3 py-1.5 bg-slate-950/20 border border-white/5 text-slate-600 text-xs font-semibold rounded-lg pointer-events-none flex items-center justify-center gap-1">
+                                下一頁
+                                <svg class="w-3.5 h-3.5 stroke-current" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                            </span>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================= 彈出式 Modal：編輯學生學籍 ======================================= -->
+<div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    <!-- 玻璃 Modal 卡片 -->
+    <div class="w-full max-w-md backdrop-blur-2xl bg-slate-900/60 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/60 transform scale-95 transition-transform duration-300">
+        
+        <div class="flex items-center justify-between mb-6 border-b border-white/5 pb-3">
+            <h3 class="text-lg font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">修改學籍資料</h3>
+            <button onclick="closeEditModal()" class="text-slate-400 hover:text-white transition-colors duration-300 cursor-pointer">
+                <svg class="w-5 h-5 stroke-current" fill="none" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form method="post" action="~/Insert/UpdateStudent" autocomplete="off" class="space-y-4">
+            
+            <!-- 學號 (不可修改，作為 Primary Key 主鍵標示) -->
+            <input type="hidden" id="edit_stuno" name="stuno" />
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-500 tracking-wider">學生學號 (不可編輯主鍵)</label>
+                <input type="text" id="edit_stuno_display" class="w-full px-4 py-3 bg-slate-950/20 border border-white/5 rounded-xl text-slate-500 text-sm cursor-not-allowed shadow-inner font-mono font-semibold" disabled />
+            </div>
+
+            <!-- 姓名 -->
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="edit_name">學生姓名</label>
+                <input type="text" id="edit_name" name="name" placeholder="請輸入學生姓名" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" required />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <!-- 系所代碼 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="edit_deptno">系所代碼</label>
+                    <input type="text" id="edit_deptno" name="deptno" placeholder="例如：347" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" required />
+                </div>
+
+                <!-- 入學年 -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="edit_entryYear">入學年 (民國)</label>
+                    <input type="text" id="edit_entryYear" name="entryYear" placeholder="例如：110" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" required />
+                </div>
+            </div>
+
+            <!-- 畢業年 -->
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-400 tracking-wider" for="edit_gradDate">畢業年 (民國 - 可為空)</label>
+                <input type="text" id="edit_gradDate" name="gradDate" placeholder="例如：114" class="w-full px-4 py-3 bg-slate-950/40 border border-white/5 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all duration-300 shadow-inner" />
+            </div>
+
+            <div class="flex gap-4 mt-6 border-t border-white/5 pt-5">
+                <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-slate-800 hover:bg-slate-700 border border-white/5 text-slate-200 text-sm font-semibold rounded-xl transition-all duration-300 cursor-pointer shadow-md">
+                    取消
+                </button>
+                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-sm font-bold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/25 cursor-pointer">
+                    保存修改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ======================================= 彈出式 Modal：刪除學籍確認 ======================================= -->
+<div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="w-full max-w-sm backdrop-blur-2xl bg-slate-900/60 border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/60 transform scale-95 transition-transform duration-300 text-center">
+        
+        <!-- 警示圖標 -->
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/15 text-rose-500 mb-4 border border-rose-500/20">
+            <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+
+        <h3 class="text-base font-bold text-slate-100 mb-2">確定要刪除該學生學籍嗎？</h3>
+        <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+            您即將刪除學生 <span id="del_student_name" class="text-rose-400 font-bold"></span> 的學籍。此操作會<span class="text-rose-400 font-semibold underline">級聯清理該生的所有修課記錄與全部成績統計數據</span>，且無法撤銷！
+        </p>
+
+        <form method="post" action="~/Insert/DeleteStudent">
+            <input type="hidden" id="del_stuno" name="stuno" />
+            
+            <div class="flex gap-4">
+                <button type="button" onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 border border-white/5 text-slate-200 text-xs font-semibold rounded-xl transition-all duration-300 cursor-pointer shadow-md">
+                    取消
+                </button>
+                <button type="submit" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold rounded-xl transition-all duration-300 shadow-lg shadow-rose-600/25 cursor-pointer">
+                    確定安全刪除
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ======================================= 互動控制邏輯 Javascript ======================================= -->
+<script>
+    // 編輯 Modal 控制
+    function openEditModal(stuno, name, deptno, entryYear, gradDate) {
+        document.getElementById('edit_stuno').value = stuno;
+        document.getElementById('edit_stuno_display').value = stuno;
+        document.getElementById('edit_name').value = name;
+        document.getElementById('edit_deptno').value = deptno;
+        document.getElementById('edit_entryYear').value = entryYear;
+        document.getElementById('edit_gradDate').value = gradDate;
+
+        var modal = document.getElementById('editModal');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+    }
+
+    function closeEditModal() {
+        var modal = document.getElementById('editModal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-100');
+        modal.querySelector('div').classList.add('scale-95');
+    }
+
+    // 刪除 Modal 控制
+    function triggerDelete(stuno, name) {
+        document.getElementById('del_stuno').value = stuno;
+        document.getElementById('del_student_name').textContent = name + " (" + stuno + ")";
+
+        var modal = document.getElementById('deleteModal');
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-95');
+        modal.querySelector('div').classList.add('scale-100');
+    }
+
+    function closeDeleteModal() {
+        var modal = document.getElementById('deleteModal');
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modal.querySelector('div').classList.remove('scale-100');
+        modal.querySelector('div').classList.add('scale-95');
+    }
+
+    // 點擊 Modal 外部背景自動關閉
+    window.addEventListener('click', function(e) {
+        var editModal = document.getElementById('editModal');
+        var deleteModal = document.getElementById('deleteModal');
+        if (e.target === editModal) {
+            closeEditModal();
+        }
+        if (e.target === deleteModal) {
+            closeDeleteModal();
+        }
+    });
+</script>
